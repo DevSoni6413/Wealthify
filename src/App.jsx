@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, PlusCircle, List, Settings, Download, AlertTriangle, TrendingDown, IndianRupee, Store, Tag, Trash2 } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, List, Settings, Download, AlertTriangle, TrendingUp, IndianRupee, Store, Tag, Trash2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 import * as XLSX from 'xlsx';
 
@@ -329,7 +329,7 @@ export default function App() {
       {/* Sidebar Navigation */}
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-logo"><TrendingDown size={28} color="#0d1117" /></div>
+          <div className="brand-logo"><TrendingUp size={28} color="#0d1117" /></div>
           <div>
             <h1>Wealthify</h1>
             <span>Command Your Capital</span>
