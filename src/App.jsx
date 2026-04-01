@@ -251,6 +251,25 @@ export default function App() {
   const [allTxs, setAllTxs] = useState([]);
   const [monthTxs, setMonthTxs] = useState([]);
   const [budgets, setBudgets] = useState({});
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPrompt(null);
+    }
+  };
 
   const refreshData = () => {
     setMonthTxs(getTransactionsForMonth(year, month));
@@ -351,6 +370,11 @@ export default function App() {
           </button>
           
           <div className="sidebar-footer">
+            {installPrompt && (
+              <button className="btn-export" onClick={handleInstallClick} style={{ marginBottom: '10px', backgroundColor: '#FFD700', color: '#0d1117' }}>
+                <Download size={18} /> Install Desktop App
+              </button>
+            )}
             <button className="btn-export" onClick={handleExcelExport}>
               <Download size={18} /> Export Excel
             </button>

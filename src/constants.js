@@ -31,8 +31,8 @@ export const MERCHANT_KEYWORDS = {
   Shopping: ['amazon', 'flipkart', 'myntra', 'ajio', 'nykaa', 'zara', 'h&m'],
   Bills: ['airtel', 'jio', 'vi', 'bescom', 'electricity', 'water', 'gas', 'broadband', 'recharge', 'wifi'],
   Entertainment: ['netflix', 'prime', 'hotstar', 'spotify', 'bookmyshow', 'pvr', 'inox', 'movie'],
-  Health: ['apollo', 'pharmacy', 'hospital', 'clinic', 'netmeds', 'pharmeasy', 'medplus'],
-  Education: ['udemy', 'coursera', 'byjus', 'unacademy', 'school', 'college', 'tuition'],
+  Health: ['apollo', 'pharmacy', 'hospital', 'clinic', 'netmeds', 'pharmeasy', 'medplus', 'prescription', 'chemical store', 'chemist', 'medical'],
+  Education: ['udemy', 'coursera', 'byjus', 'unacademy', 'school', 'college', 'tuition', 'books', 'bookstore', 'stationery'],
 };
 
 export function categorizeExpense(merchantStr) {
