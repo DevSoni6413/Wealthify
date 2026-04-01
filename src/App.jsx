@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, PlusCircle, List, Settings, Download, AlertTriangle, TrendingDown, IndianRupee, Store, Tag } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, List, Settings, Download, AlertTriangle, TrendingDown, IndianRupee, Store, Tag, Trash2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 import * as XLSX from 'xlsx';
 
 import { CATEGORIES, CATEGORY_COLORS, categorizeExpense, DEFAULT_BUDGETS } from './constants';
-import { getTransactionsForMonth, getBudgets, saveBudgets, getTotalSpent, getTotalBudget, getSpendingPercentage, formatCurrency, getCurrentYearMonth, saveTransaction, getTransactions } from './storage';
+import { getTransactionsForMonth, getBudgets, saveBudgets, getTotalSpent, getTotalBudget, getSpendingPercentage, formatCurrency, getCurrentYearMonth, saveTransaction, getTransactions, deleteTransaction } from './storage';
 
 // --- SUB-COMPONENTS ---
 
@@ -160,7 +160,7 @@ const AddExpenseView = ({ year, month, onSave }) => {
   );
 };
 
-const HistoryView = ({ transactions }) => (
+const HistoryView = ({ transactions, onDelete }) => (
   <div className="fade-in max-w-2xl mx-auto">
     <div className="page-header mb-0">
       <h2>Ledger History</h2>
@@ -170,13 +170,27 @@ const HistoryView = ({ transactions }) => (
       {transactions.length === 0 ? <p className="empty-state">No transactions recorded yet.</p> : (
         <div className="history-list">
           {transactions.map(t => (
-            <div className="history-item" key={t.id}>
+            <div className="history-item" key={t.id} style={{ position: 'relative' }}>
               <div className="hist-icon" style={{ backgroundColor: CATEGORY_COLORS[t.category] || '#fff', boxShadow: `0 0 10px ${CATEGORY_COLORS[t.category] || '#fff'}66` }} />
               <div className="hist-details">
                 <div className="hist-merch">{t.merchant}</div>
                 <div className="hist-date">{t.date}  •  <span style={{color: CATEGORY_COLORS[t.category]}}>{t.category}</span></div>
               </div>
-              <div className="hist-amount">- {formatCurrency(t.amount)}</div>
+              <div className="hist-amount" style={{ paddingRight: '46px' }}>- {formatCurrency(t.amount)}</div>
+              <button 
+                onClick={() => {
+                  if (window.confirm(`Delete transaction: ${t.merchant} for ${formatCurrency(t.amount)}?`)) {
+                    onDelete(t.id);
+                  }
+                }}
+                className="del-btn"
+                title="Delete transaction"
+                style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#ff4d4f', cursor: 'pointer', opacity: 0.7, transition: 'opacity 0.2s', padding: '8px' }}
+                onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                onMouseLeave={e => e.currentTarget.style.opacity = 0.7}
+              >
+                <Trash2 size={18} />
+              </button>
             </div>
           ))}
         </div>
@@ -244,6 +258,11 @@ export default function App() {
     let localBdgs = getBudgets();
     if (Object.keys(localBdgs).length === 0) localBdgs = DEFAULT_BUDGETS; 
     setBudgets(localBdgs);
+  };
+
+  const handleDeleteTransaction = (id) => {
+    deleteTransaction(id);
+    refreshData();
   };
 
   const sendNotification = (title, body) => {
@@ -352,7 +371,7 @@ export default function App() {
         
         {view === 'add' && <AddExpenseView year={year} month={month} onSave={() => { refreshData(); setView('dashboard'); }} />}
         
-        {view === 'history' && <HistoryView transactions={allTxs} />}
+        {view === 'history' && <HistoryView transactions={allTxs} onDelete={handleDeleteTransaction} />}
         
         {view === 'budgets' && <SettingsView initialBudgets={budgets} onSave={() => { refreshData(); setView('dashboard'); }} />}
       </main>

@@ -16,6 +16,13 @@ export function saveTransaction(tx) {
   return updated;
 }
 
+export function deleteTransaction(id) {
+  const current = getTransactions();
+  const updated = current.filter(t => t.id !== id);
+  localStorage.setItem(TX_KEY, JSON.stringify(updated));
+  return updated;
+}
+
 export function getTransactionsForMonth(year, month) {
   const all = getTransactions();
   const mStr = String(month).padStart(2, '0');
